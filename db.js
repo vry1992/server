@@ -5,5 +5,5 @@ export const pool = new Pool.Pool({
     host: '127.0.0.1',
     database: 'dubaev',
     password: 'user',
-    port: 3500,
+    port: 5432,
 })

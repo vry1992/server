@@ -1,0 +1,7 @@
+SELECT json_agg((ship_name, ship_id)) as aaa, unit_name FROM units
+        INNER JOIN ships ON units.unit_id = ships.fk_unit_id
+        WHERE ship_name = 'Москва'
+        GROUP BY unit_name
+
+        SELECT ship_name, unit_name FROM units
+        LEFT JOIN ships ON UPPER(ship_name) LIKE UPPER('%вв%') OR ship_name = 'Москва'
