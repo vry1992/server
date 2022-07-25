@@ -5,3 +5,20 @@ SELECT json_agg((ship_name, ship_id)) as aaa, unit_name FROM units
 
         SELECT ship_name, unit_name FROM units
         LEFT JOIN ships ON UPPER(ship_name) LIKE UPPER('%вв%') OR ship_name = 'Москва'
+
+
+          CREATE TABLE public.ships_data
+(
+    "data_id" character varying(64) NOT NULL,
+    "discover_timestamp" integer NOT NULL,
+    "latitude" double precision,
+    "longitude" double precision,
+    "peleng" integer,
+    "person_who_added" character varying(64) NOT NULL,
+    "create_timestamp" integer NOT NULL,
+    "person_who_edited" character varying(64),
+    "edit_timestamp" integer,
+    "additional_information" text,
+    "fk_ship_data_id" character varying(64) REFERENCES ships(ship_id) NOT NULL,
+    CONSTRAINT "pk_ship_data_id" PRIMARY KEY (data_id)
+);

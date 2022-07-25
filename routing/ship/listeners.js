@@ -30,6 +30,24 @@ export async function postSearchShipByKeyWord(request, response) {
     [`%${request.body.search}%`]
   );
   response.status(statuses.commonSuccess).json(result.rows)
+};
+
+export async function postShipData(request, response) {
+  console.log(request.body);
+  await pool.query(
+    `INSERT INTO ships (
+      data_id, 
+      fk_ship_data_id, 
+      discover_timestamp,
+      person_who_added,
+      latitude,
+      longitude,
+      peleng,
+      create_timestamp
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [getId(), ...Object.values(request.body)]
+  );
+  response.status(statuses.commonSuccess).json(result.rows)
 }
 
 //   CREATE TABLE public.ships
@@ -40,8 +58,8 @@ export async function postSearchShipByKeyWord(request, response) {
 //     "ship_project" character varying(16) NOT NULL,
 //     "ship_type" character varying(16) NOT NULL,
 //     "ship_city" character varying(64) NOT NULL,
-    // "fk_unit_id" character varying(64) REFERENCES units(unit_id) NOT NULL,
-    // CONSTRAINT "pk_ship_id" PRIMARY KEY (ship_id)
+//     "fk_unit_id" character varying(64) REFERENCES units(unit_id) NOT NULL,
+//     CONSTRAINT "pk_ship_id" PRIMARY KEY (ship_id)
 // );
 
 // ALTER TABLE IF EXISTS public.ships
