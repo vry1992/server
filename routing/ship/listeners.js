@@ -79,8 +79,8 @@ export async function postShipData(request, response) {
       ...(requestBody[additionalInformation.bodyKey] && { [additionalInformation.colName]: requestBody[additionalInformation.bodyKey] }),
       ...(requestBody[shipId.bodyKey] && { [shipId.colName]: requestBody[shipId.bodyKey] }),
       ...(requestBody[frequency.bodyKey] && { [frequency.colName]: requestBody[frequency.bodyKey] }),
-      ...(requestBody[shipCallsign.bodyKey] && { [shipCallsign.colName]: shipCallsign[frequency.bodyKey] }),
-      ...(requestBody[companionCallsign.bodyKey] && { [companionCallsign.colName]: companionCallsign[frequency.bodyKey] }),
+      ...(requestBody[shipCallsign.bodyKey] && { [shipCallsign.colName]: requestBody[shipCallsign.bodyKey] }),
+      ...(requestBody[companionCallsign.bodyKey] && { [companionCallsign.colName]: requestBody[companionCallsign.bodyKey] }),
     });
     response.status(statuses.successCreate);
     response.end();
