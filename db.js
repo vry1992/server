@@ -1,9 +1,12 @@
-import Pool from 'pg';
+import knex from 'knex';
 
-export const pool = new Pool.Pool({
-    user: 'postgres',
-    host: '127.0.0.1',
-    database: 'dubaev',
-    password: 'user',
-    port: 5432,
+export const pool = knex({
+    client: 'pg',
+    connection: {
+        user: 'postgres',
+        host: '127.0.0.1',
+        database: 'dubaev',
+        password: 'user',
+        port: 5432,
+    }
 })

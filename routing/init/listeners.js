@@ -3,8 +3,8 @@ import { pool } from '../../db.js'
 
 export async function init(request, response) {
     try {
-      const { rows } = await pool.query(
-        'SELECT unit_id, unit_name FROM units'
+      const rows = await pool('units').select(
+        'unit_id', 'unit_name'
       );
       response.status(statuses.successCreate).json(rows);
       response.end();

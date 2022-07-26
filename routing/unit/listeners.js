@@ -4,6 +4,7 @@ import { getId } from "../../utils/index.js";
 
 export async function postUnit(request, response) {
   try {
+    console.log(request.body);
     await pool.query(
       'INSERT INTO units (unit_id, unit_name, unit_city) VALUES ($1, $2, $3)',
       [getId(), ...Object.values(request.body)]

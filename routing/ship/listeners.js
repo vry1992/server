@@ -1,35 +1,51 @@
 import { statuses } from "../../constants/statuses.js";
 import { pool } from '../../db.js'
 import { getId } from "../../utils/index.js";
+import { shipsTableConfig, unitsTableConfig } from "../../constants/tables.js";
 
 export async function postShip(request, response) {
   try {
-    await pool.query(
-      'INSERT INTO ships (ship_id, ship_name, ship_bort_number, ship_project, ship_type, fk_unit_id, ship_city) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-      [getId(), ...Object.values(request.body)]
-    );
-    const result = await pool.query(
-    `SELECT  units.unit_name, ships.ship_name  
-    FROM units
-    LEFT JOIN ships
-    ON units.unit_id = ships.fk_unit_id`);
+    const { tableName: shipsTableName, columns: shipsColumns } = shipsTableConfig;
+    const { tableName: unitsTableName, columns: unitsColumns } = unitsTableConfig;
+    const { body: requestBody } = request;
+    const { shipId, shipName, bortNumber, project, shipType, shipUnit, city: shipCity } = shipsColumns;
+    const { unitId, unitName } = unitsColumns;
 
-    response.status(statuses.successCreate).json(result.rows)
+    await pool(shipsTableName).insert({
+      [shipId.colName]: getId(),
+      ...(requestBody[shipName.bodyKey] && { [shipName.colName]: requestBody[shipName.bodyKey] }),
+      ...(requestBody[bortNumber.bodyKey] && { [bortNumber.colName]: requestBody[bortNumber.bodyKey] }),
+      ...(requestBody[project.bodyKey] && { [project.colName]: requestBody[project.bodyKey] }),
+      ...(requestBody[shipType.bodyKey] && { [shipType.colName]: requestBody[shipType.bodyKey] }),
+      ...(requestBody[shipUnit.bodyKey] && { [shipUnit.colName]: requestBody[shipUnit.bodyKey] }),
+      ...(requestBody[shipCity.bodyKey] && { [shipCity.colName]: requestBody[shipCity.bodyKey] }),
+    });
+
+    const selectedRows = await pool(unitsTableName)
+      .join(shipsTableName, unitId.colName, shipUnit.colName)
+      .select(
+        unitName.colName,
+        pool.raw(`JSON_AGG((${shipName.colName}, ${shipId.colName})) as ships`)
+      ).groupBy(unitName.colName);
+
+    response.status(statuses.successCreate).json(selectedRows);
     response.end();
   }
   catch(error) {
-    console.log(error);
-    response.sendStatus(statuses.commonServerError);
-    response.end();
+    response.sendStatus(statuses.commonServerError).end();
   }
 };
 
 export async function postSearchShipByKeyWord(request, response) {
-  const result = await pool.query(
-    `SELECT ship_id, ship_name, ship_type FROM ships WHERE UPPER(ship_name) LIKE UPPER($1)`,
-    [`%${request.body.search}%`]
-  );
-  response.status(statuses.commonSuccess).json(result.rows)
+  const { tableName: shipsTableName, columns: shipsColumns } = shipsTableConfig;
+  const { shipId, shipName, shipType } = shipsColumns;
+  const { body: { search } } = request;
+
+  const selectedRows = await pool(shipsTableName)
+    .select(shipId.colName, shipName.colName, shipType.colName)
+    .whereILike(shipName.colName, `%${search}%`);
+
+  response.status(statuses.commonSuccess).json(selectedRows);
 };
 
 export async function postShipData(request, response) {
