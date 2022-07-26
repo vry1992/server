@@ -1,7 +1,7 @@
 import { statuses } from "../../constants/statuses.js";
 import { pool } from '../../db.js'
 import { getId } from "../../utils/index.js";
-import { shipsTableConfig, unitsTableConfig } from "../../constants/tables.js";
+import { shipsTableConfig, unitsTableConfig, shipsDataTableConfig } from "../../constants/tables.js";
 
 export async function postShip(request, response) {
   try {
@@ -49,49 +49,46 @@ export async function postSearchShipByKeyWord(request, response) {
 };
 
 export async function postShipData(request, response) {
-  console.log(request.body);
-  await pool.query(
-    `INSERT INTO ships (
-      data_id, 
-      fk_ship_data_id, 
-      discover_timestamp,
-      person_who_added,
-      latitude,
-      longitude,
-      peleng,
-      create_timestamp
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [getId(), ...Object.values(request.body)]
-  );
-  response.status(statuses.commonSuccess).json(result.rows)
+
+  const { body: requestBody } = request;
+  const { tableName: shipsDataTableName, columns: shipsDataColumns } = shipsDataTableConfig;
+  const { 
+    dataId, 
+    discoverTimestamp, 
+    latitude, 
+    longitude, 
+    peleng, 
+    personWhoAdded, 
+    createTimestamp, 
+    additionalInformation, 
+    shipId, 
+    frequency, 
+    shipCallsign, 
+    companionCallsign
+   } = shipsDataColumns;
+
+   try {
+    await pool(shipsDataTableName).insert({
+      [dataId.colName]: getId(),
+      [createTimestamp.colName]: Date.now(),
+      ...(requestBody[discoverTimestamp.bodyKey] && { [discoverTimestamp.colName]: requestBody[discoverTimestamp.bodyKey] }),
+      ...(requestBody[latitude.bodyKey] && { [latitude.colName]: requestBody[latitude.bodyKey] }),
+      ...(requestBody[longitude.bodyKey] && { [longitude.colName]: requestBody[longitude.bodyKey] }),
+      ...(requestBody[peleng.bodyKey] && { [peleng.colName]: requestBody[peleng.bodyKey] }),
+      ...(requestBody[personWhoAdded.bodyKey] && { [personWhoAdded.colName]: requestBody[personWhoAdded.bodyKey] }),
+      ...(requestBody[additionalInformation.bodyKey] && { [additionalInformation.colName]: requestBody[additionalInformation.bodyKey] }),
+      ...(requestBody[shipId.bodyKey] && { [shipId.colName]: requestBody[shipId.bodyKey] }),
+      ...(requestBody[frequency.bodyKey] && { [frequency.colName]: requestBody[frequency.bodyKey] }),
+      ...(requestBody[shipCallsign.bodyKey] && { [shipCallsign.colName]: shipCallsign[frequency.bodyKey] }),
+      ...(requestBody[companionCallsign.bodyKey] && { [companionCallsign.colName]: companionCallsign[frequency.bodyKey] }),
+    });
+    response.status(statuses.successCreate);
+    response.end();
+   }
+   catch(error) {
+    console.log(error);
+   }
+   finally {
+
+   }
 }
-
-//   CREATE TABLE public.ships
-// (
-//     "ship_id" character varying(64) NOT NULL,
-//     "ship_name" character varying(128) NOT NULL,
-//     "ship_bort_number" character varying(16) NOT NULL,
-//     "ship_project" character varying(16) NOT NULL,
-//     "ship_type" character varying(16) NOT NULL,
-//     "ship_city" character varying(64) NOT NULL,
-//     "fk_unit_id" character varying(64) REFERENCES units(unit_id) NOT NULL,
-//     CONSTRAINT "pk_ship_id" PRIMARY KEY (ship_id)
-// );
-
-// ALTER TABLE IF EXISTS public.ships
-//     OWNER to postgres;
-
-
-// CREATE TABLE public.ships_callsigns
-// (
-//     callsign_id character varying(32),
-//     callsigns_list character varying(10)[],
-//     "fk_ship_id" character varying(64) REFERENCES ships(ship_id) NOT NULL,
-//     CONSTRAINT "pk_callsign_id" PRIMARY KEY (callsign_id)
-// );
-
-// ALTER TABLE IF EXISTS public.units_callsigns
-//     OWNER to postgres;
-
-// INSERT into units_callsigns (callsign_id, callsigns_list, fk_ship_id)
-//     values('111', '{{aaaa, ddddd}}', 'cl5zg381c0002zsty5z6adovj');

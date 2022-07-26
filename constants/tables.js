@@ -49,3 +49,65 @@ export const unitsTableConfig = {
         },
     }    
 };
+
+export const shipsDataTableConfig = {
+    tableName: 'ships_data',
+    columns: {
+        dataId: {
+            colName: 'data_id',
+            bodyKey: 'dataId'
+        },
+        discoverTimestamp: {
+            colName: 'discover_timestamp',
+            bodyKey: 'discoverTimestamp'
+        },
+        latitude: {
+            colName: 'latitude',
+            bodyKey: 'latitude'
+        },
+        longitude: {
+            colName: 'longitude',
+            bodyKey: 'longitude'
+        },
+        peleng: {
+            colName: 'peleng',
+            bodyKey: 'peleng'
+        },
+        personWhoAdded: {
+            colName: 'person_who_added',
+            bodyKey: 'personName'
+        },
+        createTimestamp: {
+            colName: 'create_timestamp',
+            bodyKey: 'createTimestamp'
+        },
+        personWhoEdited: {
+            colName: 'person_who_edited',
+            bodyKey: 'personWhoEdited'
+        },
+        editTimestamp: {
+            colName: 'edit_timestamp',
+            bodyKey: 'editTimestamp'
+        },
+        additionalInformation: {
+            colName: 'additional_information',
+            bodyKey: 'additionalInformation'
+        },
+        shipId: {
+            colName: 'fk_ship_data_id',
+            bodyKey: 'shipId'
+        },
+        frequency: {
+            colName: 'frequency',
+            bodyKey: 'frequency'
+        },
+        shipCallsign: {
+            colName: 'ship_callsign',
+            bodyKey: 'shipCallsign'
+        },
+        companionCallsign: {
+            colName: 'companion_callsign',
+            bodyKey: 'companionCallsign'
+        },
+    }   
+};
