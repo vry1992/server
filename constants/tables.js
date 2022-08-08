@@ -7,7 +7,8 @@ export const shipsTableConfig = {
         },
         shipName: {
             colName: 'ship_name',
-            bodyKey: 'shipName'
+            bodyKey: 'shipName',
+            bodyKeyList: 'shipNameList',
         },
         bortNumber: {
             colName: 'ship_bort_number',
@@ -75,7 +76,8 @@ export const shipsDataTableConfig = {
         },
         personWhoAdded: {
             colName: 'person_who_added',
-            bodyKey: 'personName'
+            bodyKey: 'personName',
+            bodyKeyList: 'personNameList'
         },
         createTimestamp: {
             colName: 'create_timestamp',
@@ -103,7 +105,8 @@ export const shipsDataTableConfig = {
         },
         shipCallsign: {
             colName: 'ship_callsign',
-            bodyKey: 'shipCallsign'
+            bodyKey: 'shipCallsign',
+            bodyKeyList: 'shipCallsignList'
         },
         companionCallsign: {
             colName: 'companion_callsign',
